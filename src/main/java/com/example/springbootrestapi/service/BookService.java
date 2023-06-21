@@ -1,7 +1,10 @@
 package com.example.springbootrestapi.service;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.example.springbootrestapi.modal.Book;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,37 @@ public class BookService {
         ).findFirst().get();
         
         return book;
+    }
+
+    public Book addBook(Book b){
+        booklist.add(b);
+        return b;
+    }
+
+    public void deleteBook(int id){
+      booklist=booklist.stream().filter(book->{
+            if(book.getId()!=id){
+                return true;
+            }else{
+                return false;
+            }
+        }).collect(Collectors.toList());
+
+        //same logic with shorter code
+        // booklist=booklist.stream().filter(book->book.getId()!=id).collect(Collectors.toList());
+    }
+
+    public void updateBook(Book book,int id){
+        booklist = booklist.stream().map(b->{
+
+            if(b.getId()==id){
+                b.setId(id);
+                b.setBookName(book.getBookName());
+                b.setBookAuthor(book.getBookAuthor());
+            }
+            
+            return b;
+        }).collect(Collectors.toList());
     }
     
 }
