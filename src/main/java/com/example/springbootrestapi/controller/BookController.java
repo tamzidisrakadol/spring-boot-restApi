@@ -1,6 +1,11 @@
 package com.example.springbootrestapi.controller;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,14 +30,23 @@ public class BookController {
 
     //to get all list of book
     @GetMapping("/getBook")
-    public List<Book> getBookinfo(){
-        return this.bookService.getAllBook();
+    public ResponseEntity<List<Book>> getBookinfo(){
+        List<Book> bookList= bookService.getAllBook();
+        if (bookList.size()<=0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build() ;
+        }
+
+        return ResponseEntity.of(Optional.of(bookList));
     }
 
     //to get only single book
     @GetMapping("/bookId/{id}")
-    public Book getbookByid(@PathVariable("id")int id){
-        return bookService.getBookbyId(id);
+    public ResponseEntity<Book> getbookByid(@PathVariable("id")int id){
+        Book book = bookService.getBookbyId(id);
+        if (book==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.of(Optional.of(book));
     }
 
 
