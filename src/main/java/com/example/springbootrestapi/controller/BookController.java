@@ -52,24 +52,43 @@ public class BookController {
 
     //to create object 
     @PostMapping("/books")
-    public Book addBook(@RequestBody Book book){
-        Book books = this.bookService.addBook(book);
-        return books;
+    public ResponseEntity<Book> addBook(@RequestBody Book book){
+        Book books = null;
+        try {
+            books = this.bookService.addBook(book);
+            System.out.println(books);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 
     //to delete object
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@PathVariable("id") int id){
-        this.bookService.deleteBook(id);
+    public ResponseEntity<Void>  deleteBook(@PathVariable("id") int id){
+        try{
+            this.bookService.deleteBook(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 
     //to update an object
     @PutMapping("/books/{id}")
-    public Book updateBook(@RequestBody Book book,@PathVariable("id") int id){
-        this.bookService.updateBook(book, id);
-        return book;
+    public ResponseEntity<Book> updateBook(@RequestBody Book book,@PathVariable("id") int id){
+        try {
+            this.bookService.updateBook(book, id);
+            return ResponseEntity.ok().body(book);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
 }
